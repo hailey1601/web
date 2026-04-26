@@ -1,0 +1,40 @@
+### Đăng ký tài khoản (Tạo User)
+POST http://localhost:3000/users/register
+Content-Type: application/json
+
+{
+  "userName": "nguyenvana",
+  "email": "vana@example.com",
+  "password": "mypassword123"
+}
+
+###
+
+### Đăng nhập (Lấy apiKey)
+POST http://localhost:3000/users/login
+Content-Type: application/json
+
+{
+  "email": "vana@example.com",
+  "password": "mypassword123"
+}
+
+###
+
+### Tạo bài viết (Cần dán apiKey lấy từ bước Đăng nhập vào đường link dưới)
+POST http://localhost:3000/posts?apiKey=mern-69edcd82e78ad6ae4401fe5d-vana@example.com-de86543f145430c5
+Content-Type: application/json
+
+{
+  "content": "Đây là bài viết đầu tiên của tôi!"
+}
+
+###
+
+### Sửa bài viết (Cần ID của bài viết và apiKey)
+PUT http://localhost:3000/posts/69edcde7e78ad6ae4401fe5e?apiKey=mern-69edcd82e78ad6ae4401fe5d-vana@example.com-de86543f145430c5
+Content-Type: application/json
+
+{
+  "content": "Đây là bài viết ĐÃ ĐƯỢC CẬP NHẬT!"
+}
