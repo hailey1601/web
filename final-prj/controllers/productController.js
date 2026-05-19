@@ -1,5 +1,5 @@
 const Category = require('../models/Category');
-const Product = require('../models/Prodcut');
+const Product = require('../models/Product');
 
 exports.createCategory = async (req, res) => {
     try {
@@ -19,7 +19,7 @@ exports.createCategory = async (req, res) => {
     }
 };
 
-exports.createProcut = async (req, res) => {
+exports.createProduct = async (req, res) => {
     try {
         const { categoryID, name, description, price, stock, image } = req.body;
 
@@ -30,7 +30,7 @@ exports.createProcut = async (req, res) => {
 
         const newProduct = new Product({
             store: req.user.userId,
-            category: categoryId,
+            category: categoryID,
             name,
             description,
             price,
@@ -47,7 +47,7 @@ exports.createProcut = async (req, res) => {
 
 exports.getAllActiveProducts = async ( req, res ) => {
     try {
-        const product = await Product.find({ status: 'active' })
+        const products = await Product.find({ status: 'active' })
         .populate('store', 'storeProfile.storeName email')
         .populate('category', 'name');
 
