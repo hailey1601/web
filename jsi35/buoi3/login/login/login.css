@@ -1,0 +1,86 @@
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+#form-section {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100vh; /* Để căn giữa theo chiều dọc, div phải có chiều cao cụ thể */
+    font-size: 18px;
+}
+
+#register-form {
+    border: 1px solid #ccc; 
+    border-radius: 20px;
+    padding: 35px;
+    background-color: #f8f8f8; 
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); 
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.form-title {
+    color: #bb9627;
+    font-size: 30px;
+}
+
+.input-container {
+    margin-top: 15px;
+    margin-bottom: 5px;
+}
+.input-container input {
+    width: 200px;
+    padding: 10px;
+    font-size: 14px;
+    border: 1px solid #ccc;
+    border-radius: 20px;
+}
+
+#forgot-password {
+    color: #bb9627; 
+    margin-top: 10px;
+    font-size: 16px;
+    cursor: pointer;
+}
+#forgot-password:hover {
+    font-weight: bolder;
+}
+
+.terms-container {
+    margin-top: 15px;
+    font-size: 15px;
+    color: #555;
+    text-align: center;
+}
+
+.submit-button {
+    width: 100%;
+    background-color:  #bb9627; 
+    color: #fff;
+    border: none;
+    padding: 12px 20px;
+    border-radius: 20px;
+    cursor: pointer;
+    margin-top: 15px;
+}
+
+.new-account {
+    font-size: 15px;
+    margin-top: 15px;
+}
+.sign-up-button {
+    cursor: pointer;
+    color:  #bb9627;
+    border: none;
+    background: none;
+}
+.sign-up-button:hover {
+    text-decoration: underline;
+    font-weight: bolder;
+}
+

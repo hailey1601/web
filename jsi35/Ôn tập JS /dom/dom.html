@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <style>
+      .box_container {
+        box-sizing: border-box;
+        margin: 0 auto;
+        width: 500px;
+        height: 400px;
+        border: 2px solid red;
+        display: flex;
+        /* Giá trị của flex-direction mặc định là row */
+        justify-content: space-between;
+        align-items: flex-start;
+      }
+
+      .box {
+        width: 100px;
+        height: 100px;
+        /* display: inline-block; */
+      }
+      .box1 {
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+      }
+
+      .box1 div {
+        width: 100px;
+        height: 100px;
+        background-color: brown;
+      }
+
+      .box2 {
+        height: 100%;
+        display: flex;
+        align-items: center;
+
+      }
+
+      .box2 div {
+        width: 100px;
+        height: 100px;
+        background-color: brown;
+      }
+
+      .box3 {
+
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+      }
+
+      .box3 div {
+        width: 100px;
+        height: 100px;
+        background-color: brown;
+      }
+
+      /* 
+        * Display: flex
+        Công dụng: điều chỉnh các khối con nằm trong 1 container
+        mình có thể chỉnh được vị trí của các khối con đó
+
+        - Các khối con nằm trong khối cha có display sẽ mặc định 
+        nằm ngang hàng với nhau
+
+        - justify-content: căn chỉnh trục ngang
+        + space-between: Tạo khoảng trống giữa khối, ko có khoảng trông với viền
+        + space-around: tạo khoảng trông xung quanh 1 khối
+        + space-evenly: Tạo khoảng trống đều nhau
+
+        - align-items: căn chỉnh trục tung
+        - flex-direction: row
+        */
+    </style>
+  </head>
+  <body>
+    <button class="button">Click</button>
+    <div class="box_container">
+      <div class="box1 box">
+        <div class="small_box"></div>
+        <div class="small_box"></div>
+      </div>
+      <div class="box2 box">
+        <div class="small_box"></div>
+      </div>
+      <div class="box3 box">
+        <div class="small_box"></div>
+        <div class="small_box"></div>
+      </div>
+    </div>
+
+    <script src="dom.js"></script>
+  </body>
+</html>

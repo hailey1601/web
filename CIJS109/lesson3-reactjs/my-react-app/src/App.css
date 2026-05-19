@@ -1,0 +1,30 @@
+/* Container chung để căn giữa (tuỳ chọn) */
+.app-container {
+  display: flex;
+  flex-direction: column;
+  gap: 20px; /* Khoảng cách giữa các thẻ */
+  padding: 20px;
+  align-items: center;
+}
+
+/* Style cho từng thẻ Card */
+.card-container {
+  border: 1px solid #000; /* Viền đen */
+  border-radius: 10px; /* Bo góc */
+  padding: 20px; /* Khoảng cách nội dung so với viền */
+  width: 300px; /* Chiều rộng cố định hoặc để auto */
+  background-color: white;
+  text-align: left; /* Căn lề trái như trong ảnh */
+  box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1); /* Đổ bóng nhẹ cho đẹp */
+}
+
+.card-container h2 {
+  font-size: 18px;
+  margin-bottom: 10px;
+  font-weight: normal; /* Trong ảnh chữ 'Tôi tên' có vẻ không quá đậm */
+}
+
+.card-container p {
+  margin: 8px 0;
+  font-size: 16px;
+}

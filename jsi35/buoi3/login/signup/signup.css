@@ -1,0 +1,86 @@
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+
+#form-section {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100vh; /* Để căn giữa theo chiều dọc, div phải có chiều cao cụ thể */
+    font-size: 18px;
+}
+
+#register-form {
+    border: 1px solid #ccc; 
+    border-radius: 20px;
+    padding: 30px;
+    background-color: #f8f8f8; 
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); 
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+ 
+.form-title {
+    font-size: 35px;
+    font-weight: bold;
+    text-align: center;
+    margin-bottom: 20px;
+    color: #bb9627;
+    font-family: 'Times New Roman', Times, serif;
+}
+
+.input-container {
+    margin-bottom: 15px;
+}
+.input-container input {
+    width: 250px;
+    padding: 12px;
+    font-size: 14px;
+    border: 1px solid #ccc;
+    border-radius: 20px;
+}
+
+.terms-container {
+    margin: 15px 0;
+    font-size: 15px;
+    color: #555;
+    text-align: center;
+    font-family: 'Times New Roman', Times, serif;
+}
+
+
+.submit-button {
+    width: 100%;
+    padding: 12px;
+    font-size: 16px;
+    background-color: #bb9627;
+    color: #fff;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+}
+.submit-button:hover {
+    background-color: #C3A97E;
+}
+
+
+.register-link {
+    text-align: center;
+    margin-top: 18px;
+    font-size: 14px;
+    color: #666;
+}
+.register-link a {
+    color: #bb9627;
+    text-decoration: none;
+    font-weight: bold;
+}
+.register-link a:hover {
+    text-decoration: underline;
+}
+
