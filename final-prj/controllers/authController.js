@@ -14,7 +14,7 @@ exports.register = async (req, res) => {
       });
     }
 
-    if (!["customer", "shop"].includes(role)) {
+    if (!["customer", "shop", "admin"].includes(role)) {
       return res.status(400).json({
         success: false,
         message: "Invalid role",
@@ -98,11 +98,11 @@ exports.login = async (req, res) => {
     }
 
     // 4. Tạo mã JWT Token
-    // Mã này sẽ hết hạn sau 1 ngày (1d)
+    // Mã này sẽ hết hạn sau 30 ngày (30d)
     const token = jwt.sign(
       { userId: user._id, role: user.role },
       process.env.JWT_SECRET,
-      { expiresIn: "1d" }
+      { expiresIn: '30d' } 
     );
 
     // 5. Trả về kết quả cho client
