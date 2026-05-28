@@ -8,9 +8,16 @@ function Cart() {
   const [address, setAddress] = useState("");
   const navigate = useNavigate();
 
+  const getAuthConfig = () => {
+    const token = localStorage.getItem("token");
+    return {
+      headers: { Authorization: `Bearer ${token}` },
+    };
+  };
+
   const fetchCart = async () => {
     try {
-      const res = await api.get("/cart");
+      const res = await api.get("/cart", getAuthConfig()); 
       setCart(res.data.cart);
       setTotal(res.data.total);
     } catch (err) {
@@ -24,7 +31,7 @@ function Cart() {
 
   const removeItem = async (itemId) => {
     try {
-      await api.delete(`/cart/${itemId}`);
+      await api.delete(`/cart/${itemId}`, getAuthConfig()); 
       fetchCart();
     } catch (err) {
       alert("Lỗi xóa sản phẩm!");
@@ -34,7 +41,7 @@ function Cart() {
   const checkout = async () => {
     if (!address) return alert("Vui lòng nhập địa chỉ giao hàng!");
     try {
-      await api.post("/cart/checkout", { shippingAddress: address });
+      await api.post("/orders/checkout", { shippingAddress: address }, getAuthConfig());
       alert("Đặt hàng thành công!");
       navigate("/orders");
     } catch (err) {

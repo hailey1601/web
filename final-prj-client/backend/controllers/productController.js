@@ -92,3 +92,15 @@ exports.getAllProducts = async (req, res) => {
     res.status(500).json({ message: "Lỗi server!", error: error.message });
   }
 };
+
+exports.getMyProducts = async (req, res) => {
+  try {
+    const storeId = req.user.userId;
+    const products = await Product.find({ store: storeId })
+      .populate("category", "name")
+      .sort({ createdAt: -1 });
+    res.status(200).json(products);
+  } catch (error) {
+    res.status(500).json({ message: "Lỗi server!", error: error.message });
+  }
+};

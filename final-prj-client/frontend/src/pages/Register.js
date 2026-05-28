@@ -4,7 +4,10 @@ import api from "../api";
 
 function Register() {
   const [form, setForm] = useState({
-    name: "",
+    fullName: "",
+    storeName: "",
+    phone: "",
+    address: "",
     email: "",
     password: "",
     role: "customer",
@@ -15,7 +18,20 @@ function Register() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await api.post("/auth/register", form);
+      const payload = {
+        email: form.email,
+        password: form.password,
+        role: form.role,
+        phone: form.phone,
+        address: form.address,
+      };
+      if (form.role === "customer") {
+        payload.fullName = form.fullName;
+      } else {
+        payload.storeName = form.storeName;
+      }
+      
+      await api.post("/auth/register", payload);
       navigate("/login");
     } catch (err) {
       setError(err.response?.data?.message || "Đăng ký thất bại!");
@@ -31,25 +47,56 @@ function Register() {
         <h2 style={s.title}>Tạo tài khoản</h2>
         {error && <p style={s.error}>{error}</p>}
         <form onSubmit={handleSubmit}>
-          <input
-            style={s.input}
-            placeholder="Họ tên"
-            onChange={(e) => setForm({ ...form, name: e.target.value })}
-          />
+          {form.role === "customer" ? (
+            <input
+              style={s.input}
+              placeholder="Họ tên"
+              value={form.fullName}
+              onChange={(e) => setForm({ ...form, fullName: e.target.value })}
+              required
+            />
+          ) : (
+            <input
+              style={s.input}
+              placeholder="Tên cửa hàng"
+              value={form.storeName}
+              onChange={(e) => setForm({ ...form, storeName: e.target.value })}
+              required
+            />
+          )}
           <input
             style={s.input}
             placeholder="Email"
             type="email"
+            value={form.email}
             onChange={(e) => setForm({ ...form, email: e.target.value })}
+            required
           />
           <input
             style={s.input}
             placeholder="Mật khẩu"
             type="password"
+            value={form.password}
             onChange={(e) => setForm({ ...form, password: e.target.value })}
+            required
+          />
+          <input
+            style={s.input}
+            placeholder="Số điện thoại"
+            value={form.phone}
+            onChange={(e) => setForm({ ...form, phone: e.target.value })}
+            required
+          />
+          <input
+            style={s.input}
+            placeholder="Địa chỉ"
+            value={form.address}
+            onChange={(e) => setForm({ ...form, address: e.target.value })}
+            required
           />
           <select
             style={s.input}
+            value={form.role}
             onChange={(e) => setForm({ ...form, role: e.target.value })}
           >
             <option value="customer">Khách hàng</option>

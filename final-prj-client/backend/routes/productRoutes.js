@@ -22,6 +22,12 @@ router.get(
   checkRole(["admin"]),
   productController.getAllProducts
 );
+router.get(
+  "/my-products",
+  verifyToken,
+  checkRole(["shop"]),
+  productController.getMyProducts
+);
 router.get("/", productController.getAllActiveProducts);
 router.patch(
   "/approve/:productId",

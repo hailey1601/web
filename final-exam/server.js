@@ -22,7 +22,7 @@ app.get('/', (req, res) => {
 });
 
 // Kết nối database
-const PORT = process.env.PORT || 8080;
+const PORT = process.env.PORT || 8888;
 mongoose.connect(process.env.MONGO_URI)
   .then(() => {
     console.log('🎉 Kết nối thành công tới MongoDB Compass!');

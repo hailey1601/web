@@ -16,9 +16,13 @@ function ShopDashboard() {
   const [message, setMessage] = useState("");
   const navigate = useNavigate();
 
+  const fetchMyProducts = () => {
+    api.get("/products/my-products").then((res) => setProducts(res.data));
+  };
+
   useEffect(() => {
     api.get("/products/category").then((res) => setCategories(res.data));
-    api.get("/products").then((res) => setProducts(res.data));
+    fetchMyProducts();
   }, []);
 
   const handleSubmit = async (e) => {
@@ -38,6 +42,7 @@ function ShopDashboard() {
         stock: "",
         image: "",
       });
+      fetchMyProducts();
     } catch (err) {
       setMessage("❌ " + (err.response?.data?.message || "Lỗi!"));
     }
@@ -168,7 +173,15 @@ function ShopDashboard() {
                     <td style={s.td}>{p.price?.toLocaleString()}đ</td>
                     <td style={s.td}>{p.stock}</td>
                     <td style={s.td}>
-                      <span style={s.activeBadge}>Active</span>
+                      {p.status === "active" && (
+                        <span style={{ ...s.badge, ...s.badgeActive }}>Active</span>
+                      )}
+                      {p.status === "pending" && (
+                        <span style={{ ...s.badge, ...s.badgePending }}>Pending</span>
+                      )}
+                      {p.status === "hidden" && (
+                        <span style={{ ...s.badge, ...s.badgeHidden }}>Hidden</span>
+                      )}
                     </td>
                   </tr>
                 ))}
@@ -279,13 +292,28 @@ const s = {
   },
   tr: { borderBottom: "1px solid #1e1e3f" },
   td: { padding: "12px", fontSize: "14px" },
-  activeBadge: {
+  badge: {
+    display: "inline-block",
     padding: "4px 10px",
-    background: "rgba(76,175,80,0.15)",
-    color: "#4caf50",
     borderRadius: "20px",
     fontSize: "12px",
+    fontWeight: "bold",
+    textAlign: "center",
+  },
+  badgeActive: {
+    background: "rgba(76, 175, 80, 0.15)",
+    color: "#4caf50",
     border: "1px solid #4caf50",
+  },
+  badgePending: {
+    background: "rgba(255, 152, 0, 0.15)",
+    color: "#ff9800",
+    border: "1px solid #ff9800",
+  },
+  badgeHidden: {
+    background: "rgba(158, 158, 158, 0.15)",
+    color: "#9e9e9e",
+    border: "1px solid #9e9e9e",
   },
 };
 

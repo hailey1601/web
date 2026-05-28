@@ -39,11 +39,11 @@ exports.checkoutOrder = async (req, res) => {
       // Tính tổng tiền cộng dồn
       totalAmount += product.price * item.quantity;
 
-      // Đẩy vào mảng lưu trữ đơn hàng (Sửa lại trường priceAtPurchase cho khớp với Model Order của bạn)
+      // Đẩy vào mảng lưu trữ đơn hàng (Sửa lại trường price cho khớp với Model Order)
       orderItems.push({
         product: product._id,
         quantity: item.quantity,
-        priceAtPurchase: product.price,
+        price: product.price,
       });
     }
 
@@ -69,11 +69,11 @@ exports.checkoutOrder = async (req, res) => {
       );
     }
 
-    // 4. Khởi tạo đơn hàng mới vào cơ sở dữ liệu (Đồng bộ totalAmount cho khớp Model)
+    // 4. Khởi tạo đơn hàng mới vào cơ sở dữ liệu (Đồng bộ totalPrice cho khớp Model)
     const newOrder = new Order({
       customer: customerId,
       items: orderItems,
-      totalAmount: totalAmount, // Đồng bộ tên trường dữ liệu tổng tiền theo đúng Model Order.js
+      totalPrice: totalAmount, // Đồng bộ tên trường dữ liệu tổng tiền theo đúng Model Order.js
       shippingAddress:
         req.body.shippingAddress || "Địa chỉ nhận hàng mặc định của khách",
     });

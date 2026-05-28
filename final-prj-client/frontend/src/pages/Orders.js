@@ -7,7 +7,7 @@ function Orders() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    api.get("/cart/orders").then((res) => setOrders(res.data));
+    api.get("/orders/my-orders").then((res) => setOrders(res.data));
   }, []);
 
   const statusColor = (status) => {

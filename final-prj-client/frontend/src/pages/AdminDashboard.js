@@ -5,10 +5,19 @@ import api from "../api";
 function AdminDashboard() {
   const [products, setProducts] = useState([]);
   const [categories, setCategories] = useState([]);
+  const [orders, setOrders] = useState([]); // 💡 THÊM STATE LƯU ĐƠN HÀNG
   const [catForm, setCatForm] = useState({ name: "", description: "" });
   const [message, setMessage] = useState("");
-  const [activeTab, setActiveTab] = useState("pending");
+  const [activeTab, setActiveTab] = useState("pending"); // 'pending' | 'active' | 'orders'
   const navigate = useNavigate();
+
+  // Tạo cấu hình Header chứa Token tự động lôi từ localStorage
+  const getAuthConfig = () => {
+    const token = localStorage.getItem("token");
+    return {
+      headers: { Authorization: `Bearer ${token}` },
+    };
+  };
 
   const fetchData = async () => {
     const [prodRes, catRes] = await Promise.all([
@@ -19,8 +28,19 @@ function AdminDashboard() {
     setCategories(catRes.data);
   };
 
+  // 💡 THÊM HÀM LẤY DANH SÁCH ĐƠN HÀNG TỪ BACKEND
+  const fetchAdminOrders = async () => {
+    try {
+      const res = await api.get("/orders", getAuthConfig());
+      setOrders(res.data);
+    } catch (err) {
+      console.error("Lỗi lấy đơn hàng:", err);
+    }
+  };
+
   useEffect(() => {
     fetchData();
+    fetchAdminOrders(); // Gọi nạp đơn hàng khi load trang
   }, []);
 
   const approveProduct = async (productId) => {
@@ -48,6 +68,23 @@ function AdminDashboard() {
   const handleLogout = () => {
     localStorage.clear();
     navigate("/login");
+  };
+
+  // 💡 SỬA LẠI HÀM DUYỆT ĐƠN HÀNG HOÀN CHỈNH ĐỂ GỌI ĐÚNG CONFIG
+  const handleApproveOrder = async (orderId) => {
+    try {
+      await api.put(
+        `/orders/${orderId}/status`,
+        { status: "confirmed" },
+        getAuthConfig()
+      );
+      alert("✅ Đã duyệt đơn hàng thành công!");
+      fetchAdminOrders(); // Tải lại danh sách đơn hàng mới để cập nhật giao diện
+    } catch (err) {
+      alert(
+        "❌ Lỗi khi duyệt đơn: " + (err.response?.data?.message || err.message)
+      );
+    }
   };
 
   const pendingProducts = products.filter((p) => p.status === "pending");
@@ -86,16 +123,18 @@ function AdminDashboard() {
         {/* Stats */}
         <div style={s.stats}>
           <div style={s.statCard}>
-            <p style={s.statLabel}>Chờ duyệt</p>
+            <p style={s.statLabel}>SP Chờ duyệt</p>
             <p style={s.statNum}>{pendingProducts.length}</p>
           </div>
           <div style={s.statCard}>
-            <p style={s.statLabel}>Đang bán</p>
+            <p style={s.statLabel}>SP Đang bán</p>
             <p style={s.statNum}>{activeProducts.length}</p>
           </div>
           <div style={s.statCard}>
-            <p style={s.statLabel}>Danh mục</p>
-            <p style={s.statNum}>{categories.length}</p>
+            <p style={s.statLabel}>Tổng Đơn hàng</p>
+            <p style={s.statNum}>
+              <span style={{ color: "#ffaa00" }}>{orders.length}</span>
+            </p>
           </div>
         </div>
 
@@ -141,43 +180,53 @@ function AdminDashboard() {
           )}
         </div>
 
-        {/* Duyệt sản phẩm */}
+        {/* Khối quản lý Nội dung hiển thị theo Tabs */}
         <div style={s.card}>
           <div style={s.tabs}>
             <button
               style={activeTab === "pending" ? s.tabActive : s.tab}
               onClick={() => setActiveTab("pending")}
             >
-              Chờ duyệt ({pendingProducts.length})
+              SP Chờ duyệt ({pendingProducts.length})
             </button>
             <button
               style={activeTab === "active" ? s.tabActive : s.tab}
               onClick={() => setActiveTab("active")}
             >
-              Đang bán ({activeProducts.length})
+              SP Đang bán ({activeProducts.length})
+            </button>
+            <button
+              style={activeTab === "orders" ? s.tabActiveOrder : s.tab}
+              onClick={() => setActiveTab("orders")}
+            >
+              📦 Quản lý Đơn hàng ({orders.length})
             </button>
           </div>
 
-          <table style={s.table}>
-            <thead>
-              <tr>
-                {[
-                  "Tên sản phẩm",
-                  "Danh mục",
-                  "Giá",
-                  "Tồn kho",
-                  "Shop",
-                  activeTab === "pending" ? "Hành động" : "Trạng thái",
-                ].map((h) => (
-                  <th key={h} style={s.th}>
-                    {h}
-                  </th>
-                ))}
-              </tr>
-            </thead>
-            <tbody>
-              {(activeTab === "pending" ? pendingProducts : activeProducts).map(
-                (p) => (
+          {/* HIỂN THỊ CỘT SẢN PHẨM HOẶC ĐƠN HÀNG TÙY TAB */}
+          {activeTab !== "orders" ? (
+            <table style={s.table}>
+              <thead>
+                <tr>
+                  {[
+                    "Tên sản phẩm",
+                    "Danh mục",
+                    "Giá",
+                    "Tồn kho",
+                    "Shop",
+                    activeTab === "pending" ? "Hành động" : "Trạng thái",
+                  ].map((h) => (
+                    <th key={h} style={s.th}>
+                      {h}
+                    </th>
+                  ))}
+                </tr>
+              </thead>
+              <tbody>
+                {(activeTab === "pending"
+                  ? pendingProducts
+                  : activeProducts
+                ).map((p) => (
                   <tr key={p._id} style={s.tr}>
                     <td style={s.td}>{p.name}</td>
                     <td style={s.td}>{p.category?.name}</td>
@@ -197,21 +246,96 @@ function AdminDashboard() {
                       )}
                     </td>
                   </tr>
-                )
-              )}
-              {(activeTab === "pending" ? pendingProducts : activeProducts)
-                .length === 0 && (
+                ))}
+              </tbody>
+            </table>
+          ) : (
+            /* 💡 THÊM BẢNG HIỂN THỊ QUẢN LÝ ĐƠN HÀNG DÀNH CHO ADMIN */
+            <table style={s.table}>
+              <thead>
                 <tr>
-                  <td
-                    colSpan={6}
-                    style={{ ...s.td, textAlign: "center", color: "#888" }}
-                  >
-                    Không có sản phẩm nào.
-                  </td>
+                  {[
+                    "Mã Đơn",
+                    "Khách hàng",
+                    "Sản phẩm mua",
+                    "Tổng tiền",
+                    "Địa chỉ giao",
+                    "Trạng thái / Hành động",
+                  ].map((h) => (
+                    <th key={h} style={s.th}>
+                      {h}
+                    </th>
+                  ))}
                 </tr>
-              )}
-            </tbody>
-          </table>
+              </thead>
+              <tbody>
+                {orders.map((o) => (
+                  <tr key={o._id} style={s.tr}>
+                    <td style={{ ...s.td, fontSize: "12px", color: "#888" }}>
+                      {o._id.substring(o._id.length - 6).toUpperCase()}
+                    </td>
+                    <td style={s.td}>
+                      <div>{o.customer?.name}</div>
+                      <div style={{ fontSize: "11px", color: "#666" }}>
+                        {o.customer?.email}
+                      </div>
+                    </td>
+                    <td style={s.td}>
+                      {o.items?.map((item, idx) => (
+                        <div
+                          key={idx}
+                          style={{ fontSize: "13px", marginBottom: "4px" }}
+                        >
+                          • {item.product?.name}{" "}
+                          <span style={{ color: "#00d4ff" }}>
+                            x{item.quantity}
+                          </span>
+                        </div>
+                      ))}
+                    </td>
+                    <td
+                      style={{ ...s.td, color: "#00d4ff", fontWeight: "bold" }}
+                    >
+                      {o.totalAmount?.toLocaleString()}đ
+                    </td>
+                    <td
+                      style={{
+                        ...s.td,
+                        maxWidth: "180px",
+                        whiteSpace: "nowrap",
+                        overflow: "hidden",
+                        textOverflow: "ellipsis",
+                      }}
+                    >
+                      {o.shippingAddress}
+                    </td>
+                    <td style={s.td}>
+                      {o.status === "pending" ? (
+                        <button
+                          style={s.approveOrderBtn}
+                          onClick={() => handleApproveOrder(o._id)}
+                        >
+                          🔔 Duyệt Đơn
+                        </button>
+                      ) : (
+                        <span style={s.successBadge}>Đã Duyệt</span>
+                      )}
+                    </td>
+                  </tr>
+                ))}
+                {orders.length === 0 && (
+                  <tr>
+                    <td
+                      colSpan={6}
+                      style={{ ...s.td, textAlign: "center", color: "#888" }}
+                    >
+                      Không có đơn hàng nào trên hệ thống.
+                    </td>
+                  </tr>
+                )}
+              </tbody>
+            </table>
+          )}
         </div>
       </div>
     </div>
@@ -219,6 +343,7 @@ function AdminDashboard() {
 }
 
 const s = {
+  // Giữ nguyên toàn bộ Object css s cũ của bạn và bổ sung thêm 4 thuộc tính phong cách bên dưới:
   page: {
     background: "#0d0d1a",
     minHeight: "100vh",
@@ -355,6 +480,34 @@ const s = {
     borderRadius: "20px",
     fontSize: "12px",
     border: "1px solid #4caf50",
+  },
+
+  // 💡 CSS CỦA PHẦN ĐƠN HÀNG BỔ SUNG:
+  tabActiveOrder: {
+    padding: "8px 20px",
+    background: "rgba(255,170,0,0.1)",
+    color: "#ffaa00",
+    border: "1px solid #ffaa00",
+    borderRadius: "6px",
+    cursor: "pointer",
+    fontSize: "14px",
+  },
+  approveOrderBtn: {
+    padding: "6px 12px",
+    background: "rgba(255,170,0,0.15)",
+    color: "#ffaa00",
+    border: "1px solid #ffaa00",
+    borderRadius: "4px",
+    cursor: "pointer",
+    fontSize: "13px",
+  },
+  successBadge: {
+    padding: "4px 10px",
+    background: "rgba(76,175,80,0.2)",
+    color: "#4caf50",
+    borderRadius: "4px",
+    fontSize: "12px",
+    fontWeight: "bold",
   },
 };
 

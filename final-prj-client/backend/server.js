@@ -8,12 +8,17 @@ const app = express();
 // 1. Cấu hình các Middleware ban đầu
 app.use(
   cors({
-    origin: "http://localhost:3000",
-    methods: ["GET", "POST", "PUT", "DELETE"],
+    origin: "*",
+    methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
     allowedHeaders: ["Content-Type", "Authorization"],
   })
 );
 app.use(express.json());
+
+app.use((req, res, next) => {
+  console.log(`[SERVER] ${req.method} ${req.url}`);
+  next();
+});
 
 // 2. Kết nối cơ sở dữ liệu MongoDB
 mongoose
@@ -37,6 +42,12 @@ app.use("/api/orders", orderRoutes);
 // Route kiểm tra trạng thái server thô
 app.get("/", (req, res) => {
   res.send("Server Back-End is running smoothly!");
+});
+
+// Global error logging middleware
+app.use((err, req, res, next) => {
+  console.error("[ERROR] Global handler caught:", err);
+  res.status(500).json({ message: "Global server error!", error: err.message });
 });
 
 // 4. BẬT LẮNG NGHE CỔNG SERVER (LUÔN LUÔN ĐẶT Ở CUỐI FILE)
